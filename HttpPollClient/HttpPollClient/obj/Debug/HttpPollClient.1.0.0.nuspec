@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>HttpPollClient</id>
+    <version>1.0.0</version>
+    <authors>HttpPollClient</authors>
+    <description>Package Description</description>
+    <repository type="git" />
+    <dependencies>
+      <group targetFramework="net9.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Q:\HttpPollClient\HttpPollClient\HttpPollClient\bin\Debug\net9.0\HttpPollClient.dll" target="lib\net9.0\HttpPollClient.dll" />
+  </files>
+</package>

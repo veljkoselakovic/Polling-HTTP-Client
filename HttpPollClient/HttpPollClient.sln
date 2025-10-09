@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpPollClient", "HttpPollClient\HttpPollClient.csproj", "{7C3AE673-ABDE-4F9B-824D-CEF8C4B29DE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsumerExample", "ConsumerExample\ConsumerExample.csproj", "{4B32925B-D8DD-4D7A-A054-3025D890C47B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C3AE673-ABDE-4F9B-824D-CEF8C4B29DE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C3AE673-ABDE-4F9B-824D-CEF8C4B29DE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C3AE673-ABDE-4F9B-824D-CEF8C4B29DE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C3AE673-ABDE-4F9B-824D-CEF8C4B29DE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B32925B-D8DD-4D7A-A054-3025D890C47B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B32925B-D8DD-4D7A-A054-3025D890C47B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B32925B-D8DD-4D7A-A054-3025D890C47B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B32925B-D8DD-4D7A-A054-3025D890C47B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {635DF756-5410-44C1-BF26-D6C6F9FDF662}
+	EndGlobalSection
+EndGlobal
