@@ -1,12 +1,13 @@
-﻿using HttpPollClient.Common.Brokers;
-
-namespace HttpPollClient.Common
+﻿namespace HttpPollClient.Common.Consumer
 {
+    using HttpPollClient.Common.Brokers;
+    using HttpPollClient.Common.Metrics;
+
     public class ConsumerFactory
     {
         public static Consumer<T> CreateConsumer<T>()
         {
-            Consumer<T> consumer = new Consumer<T>();
+            Consumer<T> consumer = new();
             return consumer;
         }
 
@@ -17,6 +18,7 @@ namespace HttpPollClient.Common
                 .SetMessageBroker(messageBroker)
                 .SetMaxConcurrentTasks(3)
                 .SetConcurrencyLevel(5)
+                .SetMetricsTracker(new DefaultMetricsTracker())
                 .AddMessageProcessorToPipeline(
                     async (message) =>
                     {
@@ -44,6 +46,7 @@ namespace HttpPollClient.Common
                 .SetMessageBroker(messageBroker)
                 .SetMaxConcurrentTasks(5)
                 .SetConcurrencyLevel(5)
+                .SetMetricsTracker(new DefaultMetricsTracker())
                 .AddMessageProcessorToPipeline(
                     async (message) =>
                     {

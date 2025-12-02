@@ -4,30 +4,33 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using HttpPollClient.Common.Metrics;
     using HttpPollClient.Extension;
 
     public class Consumer<T> : IStartable, IDisposable
     {
         private bool _isRunning;
-        private List<Task> _internalConsumers;
+        private readonly List<Task> _internalConsumers;
         private CancellationTokenSource? _consumerCancellationTokenSource;
 
         private IMessageBroker<T>? _messageBroker;
-        private List<Func<T, Task<T>>> _messageProcessorPipeline;
+        private readonly List<Func<T, Task<T>>> _messageProcessorPipeline;
 
         private SemaphoreSlim _maxConcurrentMessageLimiter;
         private uint _concurrencyLevel;
+
+        private IMetricsTracker? _metricsTracker;
 
         private bool _disposed;
 
         public Consumer()
         {
             _isRunning = false;
-            _internalConsumers = new List<Task>();
+            _internalConsumers = [];
             _consumerCancellationTokenSource = null;
 
             _messageBroker = null;
-            _messageProcessorPipeline = new List<Func<T, Task<T>>>();
+            _messageProcessorPipeline = [];
 
             _maxConcurrentMessageLimiter = new SemaphoreSlim(3);
             _concurrencyLevel = 1;
@@ -48,6 +51,12 @@
         public Consumer<T> SetConcurrencyLevel(uint concurrencyLevel)
         {
             _concurrencyLevel = concurrencyLevel;
+            return this;
+        }
+
+        public Consumer<T> SetMetricsTracker(IMetricsTracker metricsTracker)
+        {
+            _metricsTracker = metricsTracker;
             return this;
         }
 
@@ -83,7 +92,7 @@
             }
             catch (OperationCanceledException)
             {
-                Console.Write("Canceled");
+                _metricsTracker?.Log("Canceled");
             }
         }
 
@@ -121,7 +130,7 @@
         public void ForceStop(string reason)
         {
             _consumerCancellationTokenSource?.Cancel();
-            Console.WriteLine(reason);
+            _metricsTracker?.Log($"Consumer force stopped: {reason}");
             // Log reason
         }
 
