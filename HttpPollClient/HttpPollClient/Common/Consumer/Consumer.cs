@@ -7,14 +7,14 @@
     using HttpPollClient.Common.Metrics;
     using HttpPollClient.Extension;
 
-    public class Consumer<T> : IStartable, IDisposable
+    public class Consumer<TMessage> : IStartable, IDisposable
     {
         private bool _isRunning;
         private readonly List<Task> _internalConsumers;
         private CancellationTokenSource? _consumerCancellationTokenSource;
 
-        private IMessageBroker<T>? _messageBroker;
-        private readonly List<Func<T, Task<T>>> _messageProcessorPipeline;
+        private IMessageBroker<TMessage>? _messageBroker;
+        private readonly List<Func<TMessage, Task<TMessage>>> _messageProcessorPipeline;
 
         private SemaphoreSlim _maxConcurrentMessageLimiter;
         private uint _concurrencyLevel;
@@ -36,31 +36,31 @@
             _concurrencyLevel = 1;
         }
 
-        public Consumer<T> SetMessageBroker(IMessageBroker<T> messageBroker)
+        public Consumer<TMessage> SetMessageBroker(IMessageBroker<TMessage> messageBroker)
         {
             _messageBroker = messageBroker;
             return this;
         }
 
-        public Consumer<T> SetMaxConcurrentTasks(int maxValue)
+        public Consumer<TMessage> SetMaxConcurrentTasks(int maxValue)
         {
             _maxConcurrentMessageLimiter = new SemaphoreSlim(maxValue);
             return this;
         }
 
-        public Consumer<T> SetConcurrencyLevel(uint concurrencyLevel)
+        public Consumer<TMessage> SetConcurrencyLevel(uint concurrencyLevel)
         {
             _concurrencyLevel = concurrencyLevel;
             return this;
         }
 
-        public Consumer<T> SetMetricsTracker(IMetricsTracker metricsTracker)
+        public Consumer<TMessage> SetMetricsTracker(IMetricsTracker metricsTracker)
         {
             _metricsTracker = metricsTracker;
             return this;
         }
 
-        public Consumer<T> AddMessageProcessorToPipeline(Func<T, Task<T>> messageProcessor)
+        public Consumer<TMessage> AddMessageProcessorToPipeline(Func<TMessage, Task<TMessage>> messageProcessor)
         {
             _messageProcessorPipeline.Add(messageProcessor);
             return this;
@@ -105,14 +105,14 @@
 
             using (await _maxConcurrentMessageLimiter.WaitAsyncWithAutoReleaser())
             {
-                T message = await _messageBroker.ConsumeMessageAsync();
+                TMessage message = await _messageBroker.ConsumeMessageAsync();
                 await ProcessMessagePipelineAsync(message);
             }
         }
 
-        private async Task ProcessMessagePipelineAsync(T message)
+        private async Task ProcessMessagePipelineAsync(TMessage message)
         {
-            foreach (var processor in _messageProcessorPipeline)
+            foreach (Func<TMessage, Task<TMessage>> processor in _messageProcessorPipeline)
             {
                 message = await processor(message);
             }

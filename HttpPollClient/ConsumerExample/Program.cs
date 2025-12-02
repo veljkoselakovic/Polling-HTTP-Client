@@ -1,5 +1,4 @@
-﻿using HttpPollClient.Common;
-using HttpPollClient.HttpClient;
+﻿using HttpPollClient.HttpClient;
 
 async static Task SendLoopAsync(HttpCallProducer producer, HttpRequestMessage message)
 {
