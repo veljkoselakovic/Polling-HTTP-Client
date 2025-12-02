@@ -1,4 +1,5 @@
-﻿using HttpPollClient.HttpClient;
+﻿using HttpPollClient.Common;
+using HttpPollClient.HttpClient;
 
 async static Task SendLoopAsync(HttpCallProducer producer, HttpRequestMessage message)
 {
@@ -9,7 +10,7 @@ async static Task SendLoopAsync(HttpCallProducer producer, HttpRequestMessage me
     }
 }
 
-HttpCallConsumer consumer = HttpCallConsumerFactory.CreateDefaultWithChannelBroker();
+HttpCallConsumer consumer = HttpCallConsumer.Factory.CreateDefaultWithChannelBroker();
 List<HttpCallProducer> producers = new List<HttpCallProducer>();
 
 for (int i = 0; i < 10; i++)

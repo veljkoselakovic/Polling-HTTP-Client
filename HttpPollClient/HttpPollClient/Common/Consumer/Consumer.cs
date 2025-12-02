@@ -9,61 +9,39 @@
 
     public class Consumer<TMessage> : IStartable, IDisposable
     {
-        private bool _isRunning;
         private readonly List<Task> _internalConsumers;
-        private CancellationTokenSource? _consumerCancellationTokenSource;
 
-        private IMessageBroker<TMessage>? _messageBroker;
+        private readonly IMessageBroker<TMessage>? _messageBroker;
         private readonly List<Func<TMessage, Task<TMessage>>> _messageProcessorPipeline;
 
-        private SemaphoreSlim _maxConcurrentMessageLimiter;
-        private uint _concurrencyLevel;
+        private readonly SemaphoreSlim _maxConcurrentMessageLimiter;
+        private readonly uint _concurrencyLevel;
 
-        private IMetricsTracker? _metricsTracker;
+        private readonly IMetricsTracker? _metricsTracker;
 
+        private bool _isRunning;
+        private CancellationTokenSource? _consumerCancellationTokenSource;
         private bool _disposed;
 
-        public Consumer()
+        public Consumer(IMessageBroker<TMessage>? messageBroker,
+                        List<Func<TMessage, Task<TMessage>>> messageProcessorPipeline,
+                        SemaphoreSlim maxConcurrentMessageLimiter,
+                        uint concurrencyLevel,
+                        IMetricsTracker? metricsTracker)
         {
             _isRunning = false;
             _internalConsumers = [];
-            _consumerCancellationTokenSource = null;
+            _disposed = false;
 
-            _messageBroker = null;
-            _messageProcessorPipeline = [];
-
-            _maxConcurrentMessageLimiter = new SemaphoreSlim(3);
-            _concurrencyLevel = 1;
-        }
-
-        public Consumer<TMessage> SetMessageBroker(IMessageBroker<TMessage> messageBroker)
-        {
             _messageBroker = messageBroker;
-            return this;
-        }
-
-        public Consumer<TMessage> SetMaxConcurrentTasks(int maxValue)
-        {
-            _maxConcurrentMessageLimiter = new SemaphoreSlim(maxValue);
-            return this;
-        }
-
-        public Consumer<TMessage> SetConcurrencyLevel(uint concurrencyLevel)
-        {
+            _messageProcessorPipeline = messageProcessorPipeline;
+            _maxConcurrentMessageLimiter = maxConcurrentMessageLimiter;
             _concurrencyLevel = concurrencyLevel;
-            return this;
-        }
-
-        public Consumer<TMessage> SetMetricsTracker(IMetricsTracker metricsTracker)
-        {
             _metricsTracker = metricsTracker;
-            return this;
         }
 
-        public Consumer<TMessage> AddMessageProcessorToPipeline(Func<TMessage, Task<TMessage>> messageProcessor)
+        public Consumer()
         {
-            _messageProcessorPipeline.Add(messageProcessor);
-            return this;
         }
 
         public void Start()
