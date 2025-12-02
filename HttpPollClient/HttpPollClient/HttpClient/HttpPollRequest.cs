@@ -4,7 +4,7 @@ namespace HttpPollClient.HttpClient
     {
         public string Url { get; set; }
         public string Method { get; set; } = "GET";
-        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Headers { get; set; } = [];
         public string Body { get; set; } = string.Empty;
         public int TimeoutInSeconds { get; set; } = 30;
 
